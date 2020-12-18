@@ -16,7 +16,7 @@ public class Demo {
     public static void main(String[] args) {
 
 
-       /* Server.Database d = new Server.Database();
+       /*Server.Database d = new Server.Database();
 
         Server.Caregiver c1 = new Server.Caregiver("Anna","Andersson","198902024785");
         Server.Caregiver c2 = new Server.Caregiver("Eva","Johansson","198801015689");

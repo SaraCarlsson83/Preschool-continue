@@ -90,6 +90,9 @@ public class MainMenuEduController implements Initializable {
     private Pane registerNewParentPane;
 
     @FXML
+    private Text newCareOrEduText;
+
+    @FXML
     private TextField firstNameCare;
 
     @FXML
@@ -128,6 +131,36 @@ public class MainMenuEduController implements Initializable {
     @FXML
     private Button noAddBtn;
 
+    @FXML
+    public Pane changePasswordPane;
+
+    @FXML
+    public PasswordField newPasswordField;
+
+    @FXML
+    public PasswordField repeatPasswordField;
+
+    @FXML
+    public Text presentPasswordText;
+
+    @FXML
+    public Text wrongPasswordText;
+
+    @FXML
+    public void savePasswordAction(ActionEvent actionEvent) {
+        if (newPasswordField.getText().equals(repeatPasswordField.getText())){
+            educator.setPassword(newPasswordField.getText());
+            changePasswordPane.setVisible(false);
+            regAbsenceText.setText("Nu är ditt nya lösenord sparat");
+            regAbsenceText.setVisible(true);
+            newPasswordField.clear();
+            repeatPasswordField.clear();
+            wrongPasswordText.setVisible(false);
+        }
+        else
+            wrongPasswordText.setVisible(true);
+    }
+
 
     @FXML
     public void yesAction(ActionEvent actionEvent) {
@@ -143,7 +176,6 @@ public class MainMenuEduController implements Initializable {
             regAbsenceText.setVisible(true);
             askRemoveChildPane.setVisible(false);
         }
-
     }
 
     @FXML
@@ -169,15 +201,29 @@ public class MainMenuEduController implements Initializable {
 
     @FXML
     void saveCaregiverAction(ActionEvent event) {
-        Caregiver caregiver = new Caregiver(firstNameCare.getText(), lastNameCare.getText(), personNrCare.getText());
-        caregiver.setEmailAddress(emailCare.getText());
-        caregiver.setPassword(passwordCare.getText());
-        caregiver.setPhoneNumber(phoneCare.getText());
-        caregiver.setPostAddress(adressCare.getText());
-        AllInfo.databaseDAO.addCaregiver(caregiver);
-        listOfParents.getItems().add(caregiver.getFirstName() + " " + caregiver.getLastName());
-        registerNewParentPane.setVisible(false);
-        registerNewChildPane.setVisible(true);
+        if(newCareOrEduText.getText().equals("Vårdnadshavare")) {
+            Caregiver caregiver = new Caregiver(firstNameCare.getText(), lastNameCare.getText(), personNrCare.getText());
+            caregiver.setEmailAddress(emailCare.getText());
+            caregiver.setPassword(passwordCare.getText());
+            caregiver.setPhoneNumber(phoneCare.getText());
+            caregiver.setPostAddress(adressCare.getText());
+            AllInfo.databaseDAO.addCaregiver(caregiver);
+            listOfParents.getItems().add(caregiver.getFirstName() + " " + caregiver.getLastName());
+            registerNewParentPane.setVisible(false);
+            registerNewChildPane.setVisible(true);
+        }
+        else {
+            Educator educator = new Educator(firstNameCare.getText(), lastNameCare.getText(), personNrCare.getText());
+            educator.setEmailAddress(emailCare.getText());
+            educator.setPassword(passwordCare.getText());
+            educator.setPhoneNumber(phoneCare.getText());
+            educator.setPostAddress(adressCare.getText());
+            AllInfo.databaseDAO.addEducator(educator);
+            registerNewParentPane.setVisible(false);
+            regAbsenceText.setText("Nu är " + educator.getFirstName() + " tillagd i förskolan");
+            regAbsenceText.setVisible(true);
+        }
+
     }
 
     @FXML
@@ -194,6 +240,7 @@ public class MainMenuEduController implements Initializable {
     @FXML
     public void newCaregiverAction(ActionEvent actionEvent) {
         registerNewChildPane.setVisible(false);
+        newCareOrEduText.setText("Vårdnadshavare");
         registerNewParentPane.setVisible(true);
     }
 
@@ -211,39 +258,49 @@ public class MainMenuEduController implements Initializable {
         setBottomPaneEmpty();
         String alt = alternativ.getValue();
 
-        if (alt.equals("Se närvaro idag")) {
-            printAttendance();
-            showAttendancePane.setVisible(true);
-        }
-        else if (alt.equals("Registrera nytt barn")) {
-            for (Caregiver caregiver : AllInfo.personDAO.getCaregiverList())
-                listOfParents.getItems().add(caregiver.getFirstName() + " " + caregiver.getLastName());
-            registerNewChildPane.setVisible(true);
-        }
-        else {
-            Child child = AllInfo.personDAO.getChild(childrens.getValue());
-            this.child = child;
-            switch (alt) {
-                case "Registrera frånvaro":
-                    AllInfo.attendanceDAO.addAbsence(child);
-                    regAbsenceText.setText("Du har registrerat frånvaro för " + child.getFirstName() +
-                            " " + child.getLastName());
-                    regAbsenceText.setVisible(true);
-                    break;
-                case "Se ett barns omsorgstider":
-                    showCaringTimes(child);
-                    contactInfo.setVisible(true);
-                    break;
-                case "Se vårdnadshavares kontaktuppgifter":
-                    showContactInfo(child);
-                    contactInfo.setVisible(true);
-                    break;
-                case "Ta bort barn":
-                    AllInfo.databaseDAO.deleteChild(child);
-                    childrens.getItems().remove(child.getFirstName() + " " + child.getLastName());
-                    askRemoveChildPane.setVisible(true);
-                    break;
-            }
+        switch (alt) {
+            case "Se närvaro idag":
+                printAttendance();
+                showAttendancePane.setVisible(true);
+                break;
+            case "Registrera nytt barn":
+                for (Caregiver caregiver : AllInfo.personDAO.getCaregiverList())
+                    listOfParents.getItems().add(caregiver.getFirstName() + " " + caregiver.getLastName());
+                registerNewChildPane.setVisible(true);
+                break;
+            case "Registrera ny pedagog":
+                newCareOrEduText.setText("Pedagog");
+                registerNewParentPane.setVisible(true);
+                break;
+            case "Ändra lösenord":
+                presentPasswordText.setText(educator.getPassword());
+                changePasswordPane.setVisible(true);
+                break;
+            default:
+                Child child = AllInfo.personDAO.getChild(childrens.getValue());
+                this.child = child;
+                switch (alt) {
+                    case "Registrera frånvaro":
+                        AllInfo.attendanceDAO.addAbsence(child);
+                        regAbsenceText.setText("Du har registrerat frånvaro för " + child.getFirstName() +
+                                " " + child.getLastName());
+                        regAbsenceText.setVisible(true);
+                        break;
+                    case "Se ett barns omsorgstider":
+                        showCaringTimes(child);
+                        contactInfo.setVisible(true);
+                        break;
+                    case "Se vårdnadshavares kontaktuppgifter":
+                        showContactInfo(child);
+                        contactInfo.setVisible(true);
+                        break;
+                    case "Ta bort barn":
+                        AllInfo.databaseDAO.deleteChild(child);
+                        childrens.getItems().remove(child.getFirstName() + " " + child.getLastName());
+                        askRemoveChildPane.setVisible(true);
+                        break;
+                }
+                break;
         }
     }
 
@@ -261,7 +318,8 @@ public class MainMenuEduController implements Initializable {
         setEducator(AllInfo.educator);
         helloText.setText("Välkommen " + getEducator().getFirstName());
         alternativ.getItems().addAll("Registrera frånvaro", "Se närvaro idag", "Se ett barns omsorgstider",
-                "Se vårdnadshavares kontaktuppgifter", "Registrera nytt barn", "Ta bort barn");
+                "Se vårdnadshavares kontaktuppgifter", "Registrera nytt barn", "Ta bort barn", "Registrera ny pedagog",
+                "Ändra lösenord");
         alternativ.setValue("Registrera frånvaro");
 
         for (Child child : AllInfo.personDAO.getChildList())
@@ -275,6 +333,7 @@ public class MainMenuEduController implements Initializable {
         registerNewChildPane.setVisible(false);
         registerNewParentPane.setVisible(false);
         careGiverVbox.setVisible(false);
+        changePasswordPane.setVisible(false);
         attendanceText.clear();
         absenceText.clear();
         presentText.clear();

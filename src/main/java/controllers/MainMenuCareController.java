@@ -13,9 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -33,6 +31,8 @@ import java.util.ResourceBundle;
  * Copywright: MIT
  */
 public class MainMenuCareController implements Initializable {
+
+
 
     private Caregiver caregiver;
 
@@ -67,11 +67,41 @@ public class MainMenuCareController implements Initializable {
     private Button saveBtn;
 
     @FXML
+    public Pane changePasswordPane;
+
+    @FXML
+    public PasswordField newPasswordField;
+
+    @FXML
+    public PasswordField repeatPasswordField;
+
+    @FXML
+    public Text presentPasswordText;
+
+    @FXML
+    public Text wrongPasswordText;
+
+    @FXML
     void LogOutAction(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("StartWindow.fxml"));
         Stage primaryStage = (Stage) saveBtn.getScene().getWindow();
         primaryStage.setScene(new Scene(root, 640, 480));
         primaryStage.show();
+    }
+
+    @FXML
+    public void savePasswordAction(ActionEvent actionEvent) {
+        if (newPasswordField.getText().equals(repeatPasswordField.getText())){
+            caregiver.setPassword(newPasswordField.getText());
+            changePasswordPane.setVisible(false);
+            regAbsenceText.setText("Nu är ditt nya lösenord sparat");
+            regAbsenceText.setVisible(true);
+            newPasswordField.clear();
+            repeatPasswordField.clear();
+            wrongPasswordText.setVisible(false);
+        }
+        else
+            wrongPasswordText.setVisible(true);
     }
 
     @FXML
@@ -123,6 +153,10 @@ public class MainMenuCareController implements Initializable {
                 showCaringTimes(child);
                 contactInfo.setVisible(true);
                 break;
+            case "Ändra lösenord":
+                presentPasswordText.setText(caregiver.getPassword());
+                changePasswordPane.setVisible(true);
+                break;
         }
     }
 
@@ -138,7 +172,8 @@ public class MainMenuCareController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setCaregiver(AllInfo.caregiver);
         helloText.setText("Välkommen " + getCaregiver().getFirstName() );
-        alternativ.getItems().addAll("Registrera frånvaro", "Kontaktuppgifter", "Registrera tider", "Visa tider");
+        alternativ.getItems().addAll("Registrera frånvaro", "Kontaktuppgifter", "Registrera tider", "Visa tider",
+                "Ändra lösenord");
         alternativ.setValue("Registrera frånvaro");
 
         for(Child child : getCaregiver().getChildren())
@@ -161,6 +196,7 @@ public class MainMenuCareController implements Initializable {
         contactInfo.setVisible(false);
         regAbsenceText.setVisible(false);
         changeCaretime.setVisible(false);
+        changePasswordPane.setVisible(false);
         contactInfo.clear();
     }
 
