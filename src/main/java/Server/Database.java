@@ -1,3 +1,7 @@
+package Server;
+
+import Enums.SerFiles;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,7 +11,6 @@ import java.util.List;
 
 public class Database implements AttendanceDAO, Serializable, PersonDAO, DatabaseDAO {
 
-
     private List<Child> childList = new LinkedList<>();
     private List<Caregiver> caregiverList = new LinkedList<>();
     private List<Educator> educatorList = new LinkedList<>();
@@ -16,15 +19,10 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
 
 
     public Database (){
-
-        this.childList = deSerialize("Children.ser");
-        //this.caregiverList = deSerialize("Caregivers.ser");
-        this.educatorList = deSerialize("Educators.ser");
+        this.childList = deSerialize(SerFiles.CHILDREN.serFiles);
+        this.educatorList = deSerialize(SerFiles.EDUCATOR.serFiles);
         findAndAddCAregiver();
         setAttendance();
-
-
-
     }
 
     public void addChild(Child c) {
@@ -47,9 +45,12 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
 
     @Override
     public void deleteChild(Child child) {
+        removeChildFromAttendance(child);
+        removeChildFromCaregiver(child);
         this.childList.remove(child);
     }
 
+    @Override
     public void addCaregiver(Caregiver caregiver) {
         this.caregiverList.add(caregiver);
     }
@@ -59,6 +60,7 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
         this.caregiverList.remove(caregiver);
     }
 
+    @Override
     public void addEducator(Educator educator) {
         this.educatorList.add(educator);
     }
@@ -73,10 +75,18 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
         return childList;
     }
 
+    @Override
     public List<Caregiver> getCaregiverList() {
         return caregiverList;
     }
 
+    @Override
+    public void removeChildFromCaregiver(Child child) {
+        for(Caregiver caregiver : child.getCaregivers())
+            caregiver.getChildren().remove(child);
+    }
+
+    @Override
     public List<Educator> getEducatorList() {
         return educatorList;
     }
@@ -87,6 +97,7 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
             out.writeObject(list);
             out.close();
+            System.out.println("Sparat filen " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,27 +122,15 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
 
     @Override
     public String getContactInformation(IContactInformation person) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("E-mejladress: " + person.getEmailAddress() + '\n');
-        sb.append("Telefonnummer: " + person.getPhoneNumber() + '\n');
-        sb.append("Postadress: " + person.getPostAddress());
-
-        return sb.toString();
+        return "E-mejladress: " + person.getEmailAddress() + '\n' +
+                "Telefonnummer: " + person.getPhoneNumber() + '\n' +
+                "Postadress: " + person.getPostAddress() + "\n\n";
     }
 
     @Override
     public Child getChild(String name) {
         for(Child c : childList){
-            if(c.getFirstName().equalsIgnoreCase(name) || c.getLastName().equalsIgnoreCase(name)){
-                return c;
-            }
-        }
-        return null;
-    }
-
-    public Caregiver getCaregiver(String name){
-        for (Caregiver c: caregiverList){
-            if(c.getFirstName().equalsIgnoreCase(name) || c.getLastName().equalsIgnoreCase(name)){
+            if(name.startsWith(c.getFirstName()) || name.startsWith(c.getLastName())){
                 return c;
             }
         }
@@ -139,9 +138,29 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
     }
 
     @Override
-    public Educator getEducator(String name) {
+    public Caregiver getCaregiver(String username, String password){
+        for (Caregiver c: caregiverList){
+            if(c.getEmailAddress().equalsIgnoreCase(username)&& c.getPassword().equals(password)){
+                return c;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Caregiver getCaregiver(String name) {
+        for (Caregiver c: caregiverList){
+            if((c.getFirstName() + " " + c.getLastName()).equalsIgnoreCase(name)){
+                return c;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Educator getEducator(String userName, String password) {
         for(Educator e: educatorList){
-            if(e.getFirstName().equalsIgnoreCase(name) || e.getLastName().equalsIgnoreCase(name)){
+            if(e.getEmailAddress().equalsIgnoreCase(userName) && e.getPassword().equals(password)){
                 return e;
             }
         }
@@ -168,6 +187,11 @@ public class Database implements AttendanceDAO, Serializable, PersonDAO, Databas
     @Override
     public void addChildInAttendance(Child child) {
         attendanceToday.add(new Attendance(child));
+    }
+
+    @Override
+    public void removeChildFromAttendance(Child child) {
+        attendanceToday.removeIf(attendance -> attendance.getChild() == child);
     }
 
     @Override

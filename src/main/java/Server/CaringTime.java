@@ -1,10 +1,12 @@
+package Server;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 
 public class CaringTime implements Serializable {
-    private LocalTime start;
-    private LocalTime stop;
-    private String weekday;
+    private final LocalTime start;
+    private final LocalTime stop;
+    private final String weekday;
 
     public CaringTime(String weekday, LocalTime start, LocalTime stop){
         this.weekday = weekday;

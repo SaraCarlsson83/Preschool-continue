@@ -1,5 +1,8 @@
-import java.io.IOException;
-import java.util.LinkedList;
+package controllers;
+
+import Server.Caregiver;
+import controllers.AllInfo;
+
 import java.util.List;
 
 /**
@@ -13,12 +16,12 @@ public class Demo {
     public static void main(String[] args) {
 
 
-       /* Database d = new Database();
+       /*Server.Database d = new Server.Database();
 
-        Caregiver c1 = new Caregiver("Anna","Andersson","198902024785");
-        Caregiver c2 = new Caregiver("Eva","Johansson","198801015689");
-        Caregiver c3 = new Caregiver("Maria","Karlsson","198703036523");
-        Caregiver c4 = new Caregiver("Karin","Nilsson", "198604043256");
+        Server.Caregiver c1 = new Server.Caregiver("Anna","Andersson","198902024785");
+        Server.Caregiver c2 = new Server.Caregiver("Eva","Johansson","198801015689");
+        Server.Caregiver c3 = new Server.Caregiver("Maria","Karlsson","198703036523");
+        Server.Caregiver c4 = new Server.Caregiver("Karin","Nilsson", "198604043256");
         d.addCaregiver(c1);
         d.addCaregiver(c2);
         d.addCaregiver(c3);
@@ -35,14 +38,18 @@ public class Demo {
         c4.setEmailAddress("karin.nilsson@gmail.com");
         c4.setPhoneNumber("070 555 666 77");
         c4.setPostAddress("Södertälje");
+        c1.setPassword("Anna");
+        c2.setPassword("Eva");
+        c3.setPassword("Maria");
+        c4.setPassword("Karin");
         List<Caregiver> caregiverList = d.getCaregiverList();
 
 
-        Child b1 = new Child("Alice","Andersson","201502024785");
-        Child b2 = new Child("Olivia","Johansson","201501015689");
-        Child b3 = new Child("Lucas","Karlsson","201503036523");
-        Child b4 = new Child("Liam","Nilsson","201504043256");
-        Child b5 = new Child("Astrid","Nilsson","01605053325");
+        Server.Child b1 = new Server.Child("Alice","Andersson","201502024785");
+        Server.Child b2 = new Server.Child("Olivia","Johansson","201501015689");
+        Server.Child b3 = new Server.Child("Lucas","Karlsson","201503036523");
+        Server.Child b4 = new Server.Child("Liam","Nilsson","201504043256");
+        Server.Child b5 = new Server.Child("Astrid","Nilsson","01605053325");
 
         b1.addCaringTime("måndag", "08:00", "16:00");
         b1.addCaringTime("tisdag", "08:00", "16:00");
@@ -80,7 +87,7 @@ public class Demo {
         d.addChild(b3);
         d.addChild(b4);
         d.addChild(b5);
-        List<Child> childrenList = d.getChildList();
+        List<Server.Child> childrenList = d.getChildList();
 
 
         c1.addChildren(b1);
@@ -95,32 +102,19 @@ public class Demo {
         b4.addCaregiver(c4);
         b5.addCaregiver(c4);
 
-        Educator e = new Educator("Kristina","Eriksson","97807075564");
+        Server.Educator e = new Server.Educator("Kristina","Eriksson","97807075564");
         d.addEducator(e);
         e.setEmailAddress("kristina.eriksson@gmail.com");
         e.setPhoneNumber("070 123 45 67");
         e.setPostAddress("Stockholm");
-        List<Educator> educatorList = d.getEducatorList();
+        e.setPassword("Kristina");
+        List<Server.Educator> educatorList = d.getEducatorList();
 
 
+        controllers.AllInfo.databaseDAO.serialize(childrenList,"Children.ser");
+        controllers.AllInfo.databaseDAO.serialize(educatorList,"Educators.ser");
 
-        //d.serialize(caregiverList,"Caregivers.ser");
-        d.serialize(childrenList,"Children.ser");
-        d.serialize(educatorList,"Educators.ser");
-
-
-        /*
-        List<Caregiver> caregivers = d.deSerialize(caregiverList,"Caregivers.ser");
-        System.out.println(caregivers.size());
-
-        List<Educator> educators = d.deSerialize(educatorList, "Educators.ser");
-        System.out.println(educators.size());
-
-        List<Child> children = d.deSerialize(childrenList, "Children.ser");
-        System.out.println(children.size());
-
-         */
-
+        */
 
     }
 }

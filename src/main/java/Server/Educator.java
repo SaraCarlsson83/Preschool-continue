@@ -1,4 +1,4 @@
-import java.io.Serializable;
+package Server;
 
 /**
  * Created by Sara Carlsson
@@ -12,17 +12,15 @@ public class Educator extends Person implements IContactInformation {
     private String eMailAddress;
     private String phoneNumber;
     private String postAddress;
+    private String password;
 
-    Educator(String firstName, String lastName, String personalNumber) {
+    public Educator(String firstName, String lastName, String personalNumber) {
         super(firstName, lastName, personalNumber);
     }
 
-    public void addAbsence(){
-
-    }
-
-    public void registerNewChild(){
-
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -55,5 +53,8 @@ public class Educator extends Person implements IContactInformation {
         return postAddress;
     }
 
-
+    @Override
+    public String getPassword() {
+        return password;
+    }
 }
