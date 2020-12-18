@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.Serializable;
 
 /**
@@ -18,7 +20,6 @@ public abstract class Person implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalNumber = personalNumber;
-
     }
 
     public String getFirstName() {
@@ -27,22 +28,6 @@ public abstract class Person implements Serializable {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public String getPersonalNumber() {
-        return personalNumber;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setPersonalNumber(String personalNumber) {
-        this.personalNumber = personalNumber;
     }
 
 }

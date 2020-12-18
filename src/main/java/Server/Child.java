@@ -1,22 +1,15 @@
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+package Server;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Vilma Couturier Kaijser
- * Date: 2020-11-30
- * Project: Preeschool
- * Copyright: MIT
- */
-public class Child extends Person  {
+public class Child extends Person {
 
     List<Caregiver> caregivers = new ArrayList<>();
     List<CaringTime> caringTimes = new ArrayList<>();
 
-    Child(String firstName, String lastName, String personalNumber) {
+    public Child(String firstName, String lastName, String personalNumber) {
         super(firstName, lastName, personalNumber);
     }
 
@@ -29,6 +22,8 @@ public class Child extends Person  {
         LocalTime stop = LocalTime.parse(inputStopTime);
         caringTimes.add(new CaringTime(inputDate, start, stop));
     }
+
+    public List<CaringTime> getCaringTimes(){return caringTimes; }
 
     public List<Caregiver> getCaregivers() {
         return caregivers;

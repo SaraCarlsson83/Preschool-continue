@@ -1,3 +1,5 @@
+package Enums;
+
 /**
  * Created by Sara Carlsson
  * Date: 08/12/2020
@@ -7,9 +9,8 @@
  */
 public enum SerFiles {
     CHILDREN("Children.ser"),
-    //CAREGIVERS("Caregivers.ser"),
     EDUCATOR("Educators.ser"),
-    ATTENDANCE("Attendance.ser"),
+    ATTENDANCE("sample.Attendance.ser"),
     LIST_OF_ATTENDANCES("ListOfAttendance.ser");
     public final String serFiles;
 

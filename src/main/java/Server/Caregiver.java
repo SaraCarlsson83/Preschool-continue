@@ -1,18 +1,10 @@
+package Server;
 
-import java.io.Serializable;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Vilma Couturier Kaijser
- * Date: 2020-11-30
- * Project: Preeschool
- * Copyright: MIT
- */
-
 public class Caregiver extends Person implements IContactInformation {
-
+    private String password;
     private String eMailAddress;
     private String phoneNumber;
     private String postAddress;
@@ -20,7 +12,7 @@ public class Caregiver extends Person implements IContactInformation {
 
     public Caregiver(String firstName, String lastName, String personalNumber) {
         super(firstName, lastName, personalNumber);
-        children = new ArrayList<Child>();
+        children = new ArrayList<>();
     }
 
     public void addChildren(Child child){
@@ -38,7 +30,12 @@ public class Caregiver extends Person implements IContactInformation {
     public List<Child> getChildren(){
         return children;
     }
-   
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setEmailAddress(String emailAddress) {
         this.eMailAddress = emailAddress;
     }
@@ -66,6 +63,11 @@ public class Caregiver extends Person implements IContactInformation {
     @Override
     public String getPostAddress() {
         return postAddress;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
 }
