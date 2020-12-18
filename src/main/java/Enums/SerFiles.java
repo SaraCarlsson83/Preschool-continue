@@ -10,7 +10,7 @@ package Enums;
 public enum SerFiles {
     CHILDREN("Children.ser"),
     EDUCATOR("Educators.ser"),
-    ATTENDANCE("sample.Attendance.ser"),
+    ATTENDANCE("Attendance.ser"),
     LIST_OF_ATTENDANCES("ListOfAttendance.ser");
     public final String serFiles;
 
